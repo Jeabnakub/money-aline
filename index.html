@@ -1,0 +1,1427 @@
+<!doctype html>
+<html lang="th" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบทะเบียนคุมการจ่ายคืนเงินหลักประกัน e-WorkPermit</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Sarabun', sans-serif; }
+    .form-input {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1.5px solid #e5e7eb;
+      background: #fafbfc;
+    }
+    .form-input:focus {
+      border-color: #1e3a5f;
+      box-shadow: 0 0 0 4px rgba(30,58,95,0.12), inset 0 1px 2px rgba(0,0,0,0.02);
+      background: #ffffff;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(30,58,95,0.2);
+      border: none;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2c5282 0%, #3b6ba5 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(30,58,95,0.3);
+    }
+    .btn-primary:active {
+      transform: translateY(0px);
+      box-shadow: 0 4px 8px rgba(30,58,95,0.2);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(6,95,70,0.12);
+      border: none;
+    }
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, #047857 0%, #059669 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(6,95,70,0.2);
+    }
+    .btn-warning {
+      background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(180,83,9,0.15);
+      border: none;
+    }
+    .btn-warning:hover {
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(180,83,9,0.25);
+    }
+    .header-gradient {
+      background: linear-gradient(135deg, #1a2d4a 0%, #2d4a6f 50%, #3d5a7f 100%);
+      border-bottom: 4px solid #d4a017;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    .card-shadow {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.09), 0 8px 20px rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.03);
+      border-radius: 12px;
+      transition: box-shadow 0.3s ease;
+    }
+    .card-shadow:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 12px 28px rgba(0,0,0,0.12);
+    }
+    .result-table th {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+      color: #ffffff;
+      font-weight: 700;
+      white-space: nowrap;
+      border-bottom: 2px solid #d4a017;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .result-table td {
+      white-space: nowrap;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .result-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    .result-table tr:hover {
+      background-color: #eff6ff;
+      transition: background-color 0.2s;
+      box-shadow: inset 0 1px 4px rgba(30,58,95,0.08);
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .fade-in {
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tab-btn {
+      transition: all 0.25s;
+      position: relative;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      border-bottom: 3px solid transparent;
+    }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      border-radius: 3px 3px 0 0;
+      box-shadow: 0 -2px 8px rgba(245,158,11,0.3);
+    }
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23475569' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 32px;
+    }
+    .gold-accent { color: #d4a017; }
+    .divider-gold {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #d4a017, transparent);
+    }
+
+    /* Toast Notification Styles */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .toast {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      min-width: 320px;
+      max-width: 420px;
+      animation: slideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-left: 4px solid;
+    }
+
+    .toast.success {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+      border-left-color: #10b981;
+      color: #065f46;
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, #fef2f2 0%, #fef5f5 100%);
+      border-left-color: #ef4444;
+      color: #7f1d1d;
+    }
+
+    .toast.warning {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef9e7 100%);
+      border-left-color: #f59e0b;
+      color: #92400e;
+    }
+
+    .toast.info {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+      border-left-color: #3b82f6;
+      color: #1e40af;
+    }
+
+    .toast.loading {
+      background: linear-gradient(135deg, #f3f4f6 0%, #f9fafb 100%);
+      border-left-color: #6b7280;
+      color: #374151;
+    }
+
+    .toast-icon {
+      flex-shrink: 0;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      margin-top: 2px;
+    }
+
+    .toast-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .toast-title {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .toast-message {
+      font-size: 13px;
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+
+    .toast-close {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: inherit;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+    }
+
+    .toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: inherit;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .toast-progress-bar {
+      height: 100%;
+      border-radius: 0 0 10px 10px;
+      animation: slideOut 3s linear forwards;
+    }
+
+    .toast.success .toast-progress-bar {
+      background: #10b981;
+    }
+
+    .toast.error .toast-progress-bar {
+      background: #ef4444;
+    }
+
+    .toast.warning .toast-progress-bar {
+      background: #f59e0b;
+    }
+
+    .toast.info .toast-progress-bar {
+      background: #3b82f6;
+    }
+
+    .toast.loading .toast-progress-bar {
+      display: none;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        width: 100%;
+      }
+      to {
+        width: 0%;
+      }
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(107, 114, 128, 0.3);
+      border-top-color: #6b7280;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Modal overlay animation */
+    @keyframes fadeInOverlay {
+      from { backdrop-filter: blur(0px); }
+      to { backdrop-filter: blur(4px); }
+    }
+
+    #editModal {
+      animation: fadeInOverlay 0.3s ease-out;
+    }
+
+    /* Loading dialog */
+    .loading-dialog {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+    }
+
+    .loading-dialog-content {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .loading-dialog-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(30, 58, 95, 0.2);
+      border-top-color: #1e3a5f;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    .loading-dialog-text {
+      color: #1e3a5f;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .loading-dialog-subtext {
+      color: #6b7280;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 50:'#f0f4f8', 100:'#d9e2ec', 200:'#bcccdc', 300:'#9fb3c8', 400:'#829ab1', 500:'#627d98', 600:'#486581', 700:'#334e68', 800:'#243b53', 900:'#102a43' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7), 0 0 10px rgba(16, 185, 129, 0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0), 0 0 20px rgba(16, 185, 129, 0.8); }
+    }
+    .online-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+      padding: 6px 12px;
+      border-radius: 9999px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-size: 12px;
+      font-weight: 600;
+      color: #059669;
+      animation: slideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .online-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gray-100 text-gray-800">
+  <div id="app-wrapper" class="w-full h-full overflow-auto">
+   <!-- Toast Container -->
+   <div id="toast-container"></div><!-- Header -->
+   <header class="header-gradient text-white py-5 px-4 shadow-lg">
+    <div class="max-w-7xl mx-auto text-center">
+     <div class="flex items-center justify-center gap-3 mb-2">
+      <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center shadow">
+       <i data-lucide="shield-check" class="w-6 h-6 text-navy-900"></i>
+      </div>
+      <h1 id="main-title" class="text-xl md:text-2xl font-bold tracking-wide">ระบบทะเบียนคุมการจ่ายคืนเงินหลักประกันการอนุญาตทำงานของคนต่างด้าวรายตัว e-WorkPermit</h1>
+      <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center shadow">
+       <i data-lucide="file-text" class="w-6 h-6 text-navy-900"></i>
+      </div>
+     </div>
+     <div class="flex items-center justify-center gap-3 mb-2">
+      <div class="divider-gold w-64"></div>
+      <div class="online-indicator">
+       <div class="online-dot"></div><span>ระบบออนไลน์</span>
+      </div>
+      <div class="divider-gold w-64"></div>
+     </div>
+     <p id="fiscal-year-text" class="text-yellow-300 font-medium text-base">ประจำปีงบประมาณ 2569</p>
+    </div>
+   </header><!-- Tabs -->
+   <div class="max-w-7xl mx-auto px-4 mt-5">
+    <div class="flex gap-1 bg-white rounded-t-xl card-shadow overflow-hidden">
+     <button onclick="switchTab('entry')" id="tab-entry" class="tab-btn active flex-1 py-3 px-4 text-sm font-semibold text-navy-800 bg-white hover:bg-navy-50 flex items-center justify-center gap-2"> <i data-lucide="file-plus" class="w-4 h-4"></i> บันทึกข้อมูล </button> <button onclick="switchTab('search')" id="tab-search" class="tab-btn flex-1 py-3 px-4 text-sm font-semibold text-navy-600 bg-gray-50 hover:bg-navy-50 flex items-center justify-center gap-2"> <i data-lucide="search" class="w-4 h-4"></i> เรียกดูข้อมูลจากฐานข้อมูล </button>
+    </div>
+   </div><!-- Entry Tab -->
+   <div id="panel-entry" class="max-w-7xl mx-auto px-4 pb-8 fade-in">
+    <div class="bg-white rounded-b-xl card-shadow p-6">
+     <form id="mainForm" onsubmit="return false;">
+      <!-- Section 1: เลขรับ -->
+      <div class="mb-6">
+       <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-amber-200">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-navy-700 to-navy-900 text-white flex items-center justify-center text-sm font-bold shadow">
+         1
+        </div>
+        <h2 class="text-lg font-bold text-navy-900 tracking-wide">ข้อมูลเลขรับ</h2>
+       </div>
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">เลขรับที่ <span class="text-red-500">*</span></label> <input type="text" id="receive_no" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none" required>
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">เลขรับที่จังหวัด</label> <input type="text" id="province_no" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">วันที่รับที่จังหวัด</label> <input type="date" id="province_date" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">หนังสือเลขรับที่</label> <input type="text" id="doc_no" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">วันที่รับหนังสือ</label> <input type="date" id="doc_date" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        </div>
+       </div>
+      </div><!-- Section 2: ข้อมูลนายจ้างและแรงงาน -->
+      <div class="mb-6">
+       <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-amber-200">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-700 to-emerald-900 text-white flex items-center justify-center text-sm font-bold shadow">
+         2
+        </div>
+        <h2 class="text-lg font-bold text-navy-900 tracking-wide">ข้อมูลนายจ้างและแรงงาน</h2>
+       </div>
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">ชื่อนายจ้าง/สถานประกอบการ <span class="text-red-500">*</span></label> <input type="text" id="employer_name" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none" required>
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">เลขประจำตัวแรงงานต่างด้าว <span class="text-red-500">*</span></label> <input type="text" id="worker_id" inputmode="numeric" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none" required maxlength="13" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">ชื่อแรงงานต่างด้าว <span class="text-red-500">*</span></label> <input type="text" id="worker_name" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none" required oninput="this.value=this.value.replace(/[^a-zA-Z\s]/g,'').toUpperCase()">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">สัญชาติ</label> <select id="nationality" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none bg-white"> <option value="">-- เลือกสัญชาติ --</option> <option value="เมียนมา">เมียนมา</option> <option value="กัมพูชา">กัมพูชา</option> <option value="ลาว">ลาว</option> <option value="เวียดนาม">เวียดนาม</option> <option value="อื่นๆ">อื่นๆ</option> </select>
+        </div>
+       </div>
+      </div><!-- Section 3: ข้อมูลการเงิน -->
+      <div class="mb-6">
+       <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-amber-200">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-rose-700 to-rose-900 text-white flex items-center justify-center text-sm font-bold shadow">
+         3
+        </div>
+        <h2 class="text-lg font-bold text-navy-900 tracking-wide">ข้อมูลการเงิน</h2>
+       </div>
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">เลขที่ใบเสร็จรับเงิน</label> <input type="text" id="receipt_no" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">วันที่ใบเสร็จรับเงิน</label> <input type="date" id="receipt_date" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">ชื่อเจ้าหน้าที่รับเงิน</label> <input type="text" id="officer_name" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">จำนวนเงิน (ค่าหลักประกัน) <span class="text-red-500">*</span></label> <input type="text" id="amount" inputmode="decimal" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none" required oninput="formatCurrencyInput(this)" placeholder="0.00">
+        </div>
+       </div>
+      </div><!-- Section 4: การอนุมัติและสถานะ -->
+      <div class="mb-6">
+       <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-amber-200">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-700 to-cyan-900 text-white flex items-center justify-center text-sm font-bold shadow">
+         4
+        </div>
+        <h2 class="text-lg font-bold text-navy-900 tracking-wide">การอนุมัติและสถานะ</h2>
+       </div>
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">วันที่ขออนุมัติ</label> <input type="date" id="approve_date" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">ชื่อ-นามสกุล (ผู้ดำเนินการ)</label> <select id="staff_name" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none bg-white"> <option value="">-- เลือกผู้ดำเนินการ --</option> <option value="นางสาวเมขลา อุดมสิริสถาพร">นางสาวเมขลา อุดมสิริสถาพร</option> <option value="นางสาวพัชราภา สุทธิอาจ">นางสาวพัชราภา สุทธิอาจ</option> </select>
+        </div>
+        <div>
+         <label class="block text-xs font-semibold text-gray-600 mb-1">สถานะการดำเนินการ <span class="text-red-500">*</span></label> <select id="status" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none bg-white" required> <option value="">-- เลือกสถานะ --</option> <option value="อยู่ระหว่างตรวจสอบข้อมูล">อยู่ระหว่างตรวจสอบข้อมูล</option> <option value="อยู่ระหว่างประสานงานผู้แจ้ง">อยู่ระหว่างประสานงานผู้แจ้ง</option> <option value="อยู่ระหว่างประสานงานจังหวัด">อยู่ระหว่างประสานงานจังหวัด</option> <option value="อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ">อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ</option> <option value="อยู่ระหว่างพิจารณาจ่ายเงิน">อยู่ระหว่างพิจารณาจ่ายเงิน</option> <option value="ดำเนินการเสร็จสิ้น">ดำเนินการเสร็จสิ้น</option> </select>
+        </div>
+        <div class="md:col-span-2 lg:col-span-3">
+         <label class="block text-xs font-semibold text-gray-600 mb-1">หมายเหตุ</label> <textarea id="remark" rows="2" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none resize-none"></textarea>
+        </div>
+       </div>
+      </div><!-- Buttons -->
+      <div class="flex flex-wrap gap-3 justify-center pt-6 border-t-2 border-gray-100">
+       <button type="button" onclick="saveRecord()" class="btn-primary text-white px-8 py-3 rounded-lg font-bold text-sm flex items-center gap-2 shadow transition"> <i data-lucide="save" class="w-4 h-4"></i> บันทึกข้อมูล </button> <button type="button" onclick="clearForm()" class="bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 px-8 py-3 rounded-lg font-bold text-sm flex items-center gap-2 transition shadow"> <i data-lucide="rotate-ccw" class="w-4 h-4"></i> ล้างข้อมูล </button>
+      </div>
+     </form>
+    </div>
+   </div><!-- Search Tab -->
+   <div id="panel-search" class="max-w-7xl mx-auto px-4 pb-8 fade-in" style="display:none;">
+    <div class="bg-white rounded-b-xl card-shadow p-6">
+     <div class="flex items-center gap-2 mb-5">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-700 to-emerald-900 text-white flex items-center justify-center shadow">
+       <i data-lucide="database" class="w-5 h-5"></i>
+      </div>
+      <h2 class="text-lg font-bold text-navy-900 tracking-wide">ค้นหาและแก้ไขข้อมูล</h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+      <div>
+       <label class="block text-xs font-semibold text-gray-600 mb-1">ค้นหาจาก</label> <select id="search_type" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none bg-white"> <option value="receive_no">เลขรับที่</option> <option value="worker_id">เลขประจำตัวแรงงานต่างด้าว</option> </select>
+      </div>
+      <div>
+       <label class="block text-xs font-semibold text-gray-600 mb-1">คำค้นหา</label> <input type="text" id="search_value" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none" placeholder="พิมพ์คำค้นหา...">
+      </div>
+      <div class="flex items-end">
+       <button type="button" onclick="searchRecords()" class="btn-secondary text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow w-full justify-center"> <i data-lucide="search" class="w-4 h-4"></i> เรียกดูข้อมูล </button>
+      </div>
+     </div><!-- Search Results -->
+     <div id="search-results" class="hidden">
+      <div class="flex flex-col gap-3 mb-5">
+       <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-600">ผลการค้นหา: <span id="result-count" class="font-bold text-navy-800">0</span> รายการ</p>
+       </div>
+       <div id="bulk-status-update" class="hidden bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4">
+        <div class="flex items-center gap-3 mb-3">
+         <i data-lucide="zap" class="w-5 h-5 text-amber-600"></i>
+         <h3 class="font-semibold text-amber-900">แก้ไขสถานะหลายรายการ</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-2">สถานะใหม่</label> <select id="bulk_status_select" class="form-input w-full border border-amber-300 rounded-lg px-3 py-2 text-sm focus:outline-none bg-white"> <option value="">-- เลือกสถานะ --</option> <option value="อยู่ระหว่างตรวจสอบข้อมูล">อยู่ระหว่างตรวจสอบข้อมูล</option> <option value="อยู่ระหว่างประสานงานผู้แจ้ง">อยู่ระหว่างประสานงานผู้แจ้ง</option> <option value="อยู่ระหว่างประสานงานจังหวัด">อยู่ระหว่างประสานงานจังหวัด</option> <option value="อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ">อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ</option> <option value="อยู่ระหว่างพิจารณาจ่ายเงิน">อยู่ระหว่างพิจารณาจ่ายเงิน</option> <option value="ดำเนินการเสร็จสิ้น">ดำเนินการเสร็จสิ้น</option> </select>
+         </div>
+         <div class="flex flex-wrap gap-2">
+          <button type="button" onclick="applyBulkStatusUpdate()" class="btn-warning text-white px-5 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow flex-1 justify-center"> <i data-lucide="check-circle" class="w-4 h-4"></i> ใช้สถานะเดียวกันทั้งหมด </button> <button type="button" onclick="toggleBulkUpdate()" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-3 py-2.5 rounded-lg font-bold text-sm transition"> <i data-lucide="x" class="w-4 h-4"></i> </button>
+         </div>
+        </div>
+        <p class="text-xs text-amber-700 mt-2">จะอัปเดตสถานะให้กับทุกรายการที่มีเลขรับที่เดียวกัน</p>
+       </div>
+       <div class="flex flex-wrap gap-2">
+        <button type="button" id="show-bulk-btn" onclick="toggleBulkUpdate()" class="btn-warning text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow"> <i data-lucide="zap" class="w-4 h-4"></i> แก้ไขหลายรายการพร้อมกัน </button> <button type="button" onclick="saveAllStatuses()" class="btn-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow"> <i data-lucide="save" class="w-4 h-4"></i> บันทึกการแก้ไขสถานะทั้งหมด </button>
+       </div>
+      </div>
+      <div class="overflow-x-auto border border-gray-200 rounded-lg">
+       <table class="result-table w-full text-xs">
+        <thead>
+         <tr>
+          <th class="px-3 py-2.5 text-left">ลำดับ</th>
+          <th class="px-3 py-2.5 text-left">เลขรับที่</th>
+          <th class="px-3 py-2.5 text-left">เลขรับจังหวัด</th>
+          <th class="px-3 py-2.5 text-left">วันที่รับจังหวัด</th>
+          <th class="px-3 py-2.5 text-left">หนังสือเลขรับที่</th>
+          <th class="px-3 py-2.5 text-left">วันที่รับหนังสือ</th>
+          <th class="px-3 py-2.5 text-left">นายจ้าง</th>
+          <th class="px-3 py-2.5 text-left">เลข ปจต.แรงงาน</th>
+          <th class="px-3 py-2.5 text-left">ชื่อแรงงาน</th>
+          <th class="px-3 py-2.5 text-left">สัญชาติ</th>
+          <th class="px-3 py-2.5 text-left">เลขใบเสร็จ</th>
+          <th class="px-3 py-2.5 text-left">วันที่ใบเสร็จ</th>
+          <th class="px-3 py-2.5 text-left">เจ้าหน้าที่รับเงิน</th>
+          <th class="px-3 py-2.5 text-right">จำนวนเงิน</th>
+          <th class="px-3 py-2.5 text-left">วันที่ขออนุมัติ</th>
+          <th class="px-3 py-2.5 text-left">ผู้ดำเนินการ</th>
+          <th class="px-3 py-2.5 text-left min-w-[200px]">สถานะ</th>
+          <th class="px-3 py-2.5 text-left">วันเวลาแจ้งสถานะล่าสุด</th>
+          <th class="px-3 py-2.5 text-left">หมายเหตุ</th>
+          <th class="px-3 py-2.5 text-center">แก้ไข</th>
+         </tr>
+        </thead>
+        <tbody id="results-body">
+        </tbody>
+       </table>
+      </div>
+     </div>
+     <div id="no-results" class="hidden text-center py-10 text-gray-400">
+      <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-3 opacity-40"></i>
+      <p class="text-sm">ไม่พบข้อมูลที่ค้นหา</p>
+     </div>
+    </div>
+   </div><!-- Edit Modal -->
+   <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center" style="background:rgba(0,0,0,0.5);">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90%] overflow-auto fade-in">
+     <div class="header-gradient text-white px-6 py-4 rounded-t-xl flex items-center justify-between">
+      <h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="edit-3" class="w-5 h-5"></i> แก้ไขข้อมูล</h3><button onclick="closeEditModal()" class="text-white hover:text-yellow-300 hover:scale-110 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+     </div>
+     <div class="p-6" id="editFormContainer">
+      <!-- Populated dynamically -->
+     </div>
+    </div>
+   </div><!-- Footer -->
+   <footer class="text-center py-4 text-xs text-gray-400 border-t border-gray-200 mt-4">
+    <p>ระบบทะเบียนคุมการจ่ายคืนเงินหลักประกัน e-WorkPermit © 2569</p>
+   </footer>
+  </div>
+  <script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJs1FdMlQrn8SToIAwSiWCJuY-7KxBlaj8uM77WAH_JP81ZybxFBCjQgJ2KDXeJnugyw/exec';
+  let searchResults = [];
+
+  // ========== TOAST NOTIFICATION SYSTEM ==========
+  function showToast(type = 'info', title = '', message = '', duration = 3000) {
+    const container = document.getElementById('toast-container');
+    const toastId = 'toast-' + Date.now() + Math.random();
+    
+    const icons = {
+      success: '✓',
+      error: '✗',
+      warning: '⚠',
+      info: 'ℹ',
+      loading: '<span class="spinner"></span>'
+    };
+
+    const toast = document.createElement('div');
+    toast.id = toastId;
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <div class="toast-icon">${icons[type]}</div>
+      <div class="toast-content">
+        ${title ? `<div class="toast-title">${title}</div>` : ''}
+        ${message ? `<div class="toast-message">${message}</div>` : ''}
+      </div>
+      <button class="toast-close" onclick="removeToast('${toastId}')">×</button>
+      ${type !== 'loading' ? '<div class="toast-progress"><div class="toast-progress-bar"></div></div>' : ''}
+    `;
+
+    container.appendChild(toast);
+
+    if (type !== 'loading' && duration > 0) {
+      setTimeout(() => removeToast(toastId), duration);
+    }
+
+    return toastId;
+  }
+
+  function removeToast(toastId) {
+    const toast = document.getElementById(toastId);
+    if (toast) {
+      toast.style.animation = 'slideOut 0.3s ease-out forwards';
+      setTimeout(() => toast.remove(), 300);
+    }
+  }
+
+  function showLoadingDialog(text = 'กำลังประมวลผล...', subtext = '') {
+    const dialogId = 'loading-dialog-' + Date.now();
+    const dialog = document.createElement('div');
+    dialog.id = dialogId;
+    dialog.className = 'loading-dialog';
+    dialog.innerHTML = `
+      <div class="loading-dialog-content">
+        <div class="loading-dialog-spinner"></div>
+        <div class="loading-dialog-text">${text}</div>
+        ${subtext ? `<div class="loading-dialog-subtext">${subtext}</div>` : ''}
+      </div>
+    `;
+    document.body.appendChild(dialog);
+    return dialogId;
+  }
+
+  function closeLoadingDialog(dialogId) {
+    const dialog = document.getElementById(dialogId);
+    if (dialog) {
+      dialog.style.animation = 'fadeOut 0.3s ease-out forwards';
+      setTimeout(() => dialog.remove(), 300);
+    }
+  }
+
+  // ========== END TOAST SYSTEM ==========
+
+  // Element SDK
+  const defaultConfig = {
+    main_title: 'ระบบทะเบียนคุมการจ่ายคืนเงินหลักประกันการอนุญาตทำงานของคนต่างด้าวรายตัว e-WorkPermit',
+    fiscal_year: '2569',
+    background_color: '#f3f4f6',
+    surface_color: '#ffffff',
+    text_color: '#1f2937',
+    primary_color: '#1e3a5f',
+    accent_color: '#d4a017',
+    font_family: 'Sarabun',
+    font_size: 14
+  };
+
+  function applyConfig(config) {
+    const title = config.main_title || defaultConfig.main_title;
+    const fy = config.fiscal_year || defaultConfig.fiscal_year;
+    const bg = config.background_color || defaultConfig.background_color;
+    const surface = config.surface_color || defaultConfig.surface_color;
+    const txt = config.text_color || defaultConfig.text_color;
+    const primary = config.primary_color || defaultConfig.primary_color;
+    const accent = config.accent_color || defaultConfig.accent_color;
+    const font = config.font_family || defaultConfig.font_family;
+    const fontSize = config.font_size || defaultConfig.font_size;
+
+    document.getElementById('main-title').textContent = title;
+    document.getElementById('fiscal-year-text').textContent = 'ประจำปีงบประมาณ ' + fy;
+    document.getElementById('app-wrapper').style.backgroundColor = bg;
+    document.getElementById('app-wrapper').style.color = txt;
+    document.getElementById('app-wrapper').style.fontFamily = font + ', Sarabun, sans-serif';
+    document.getElementById('app-wrapper').style.fontSize = fontSize + 'px';
+
+    document.querySelectorAll('.bg-white, .card-shadow').forEach(el => {
+      if(!el.classList.contains('header-gradient')) el.style.backgroundColor = surface;
+    });
+  }
+
+  if (window.elementSdk) {
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => { applyConfig(config); },
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+          { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+          { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => { config.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); } },
+          { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } }
+        ],
+        borderables: [],
+        fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+        fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ['main_title', config.main_title || defaultConfig.main_title],
+        ['fiscal_year', config.fiscal_year || defaultConfig.fiscal_year]
+      ])
+    });
+  }
+
+  // Tab switching
+  function switchTab(tab) {
+    document.getElementById('panel-entry').style.display = tab === 'entry' ? 'block' : 'none';
+    document.getElementById('panel-search').style.display = tab === 'search' ? 'block' : 'none';
+    document.getElementById('tab-entry').className = 'tab-btn flex-1 py-3 px-4 text-sm font-semibold flex items-center justify-center gap-2 ' + (tab === 'entry' ? 'active text-navy-800 bg-white' : 'text-navy-600 bg-gray-50 hover:bg-navy-50');
+    document.getElementById('tab-search').className = 'tab-btn flex-1 py-3 px-4 text-sm font-semibold flex items-center justify-center gap-2 ' + (tab === 'search' ? 'active text-navy-800 bg-white' : 'text-navy-600 bg-gray-50 hover:bg-navy-50');
+    lucide.createIcons();
+  }
+
+  // JSONP helper
+  function jsonp(url) {
+    return new Promise((resolve, reject) => {
+      const cbName = 'jsonp_cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+      const script = document.createElement('script');
+      const timeout = setTimeout(() => {
+        cleanup();
+        reject(new Error('Request timeout'));
+      }, 30000);
+
+      function cleanup() {
+        clearTimeout(timeout);
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[cbName] = (data) => {
+        cleanup();
+        resolve(data);
+      };
+
+      script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+      script.onerror = () => { cleanup(); reject(new Error('Network error')); };
+      document.body.appendChild(script);
+    });
+  }
+
+  // Get Thai datetime string
+  function getThaiDateTime() {
+    const now = new Date();
+    const thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    const d = now.getDate();
+    const m = thaiMonths[now.getMonth()];
+    const y = now.getFullYear() + 543;
+    const h = String(now.getHours()).padStart(2,'0');
+    const min = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    return d + ' ' + m + ' ' + y + ' เวลา ' + h + ':' + min + ':' + s + ' น.';
+  }
+
+  // Format date for display
+  function formatThaiDate(dateStr) {
+    if (!dateStr) return '-';
+    try {
+      const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+      const d = new Date(dateStr);
+      if (isNaN(d)) return dateStr;
+      return d.getDate() + ' ' + thaiMonths[d.getMonth()] + ' ' + (d.getFullYear() + 543);
+    } catch(e) { return dateStr; }
+  }
+
+  // Save record
+  async function saveRecord() {
+    const fields = ['receive_no','province_no','province_date','doc_no','doc_date','employer_name','worker_id','worker_name','nationality','receipt_no','receipt_date','officer_name','amount','approve_date','staff_name','status','remark'];
+    const required = ['receive_no','employer_name','worker_id','worker_name','amount','status'];
+    const data = {};
+
+    for (const f of fields) {
+      data[f] = document.getElementById(f).value.trim();
+    }
+
+    for (const r of required) {
+      if (!data[r]) {
+        showToast('warning', 'กรุณากรอกข้อมูลให้ครบ', 'กรุณากรอกฟิลด์ที่จำเป็น (*) ให้ครบถ้วน', 4000);
+        document.getElementById(r).focus();
+        return;
+      }
+    }
+
+    // Validate worker ID length
+    if (data.worker_id.length !== 13) {
+      showToast('warning', 'เลขประจำตัวแรงงานไม่ถูกต้อง', 'กรุณาพิมพ์เลขประจำตัวแรงงานต่างด้าวให้ครบ 13 หลัก (พิมพ์ ' + data.worker_id.length + ' หลัก)', 4000);
+        document.getElementById('worker_id').focus();
+        return;
+    }
+
+    data.status_datetime = getThaiDateTime();
+
+    const loadingId = showLoadingDialog('กำลังบันทึกข้อมูล...', 'กรุณารอสักครู่');
+
+    try {
+      let url = SCRIPT_URL + '?action=save';
+      for (const key in data) {
+        let value = data[key];
+        // Remove comma from amount before sending
+        if (key === 'amount') {
+          value = value.replace(/,/g, '');
+        }
+        url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
+      }
+      const result = await jsonp(url);
+      closeLoadingDialog(loadingId);
+
+      if (result.status === 'success') {
+        clearForm();
+        showToast('success', 'บันทึกสำเร็จ!', 'ข้อมูลถูกบันทึกเรียบร้อยแล้ว (ลำดับที่ ' + result.order + ')');
+      } else {
+        showToast('error', 'เกิดข้อผิดพลาด', result.message || 'ไม่สามารถบันทึกข้อมูลได้', 4000);
+      }
+    } catch(err) {
+      closeLoadingDialog(loadingId);
+      showToast('error', 'เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: ' + err.message, 5000);
+    }
+  }
+
+  // Clear form
+  function clearForm() {
+    const form = document.getElementById('mainForm');
+    
+    // Add fade-out effect to form fields
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+      input.style.transition = 'all 0.2s ease-out';
+      input.style.opacity = '0.5';
+    });
+
+    // Reset form after brief delay
+    setTimeout(() => {
+      form.reset();
+      
+      // Fade back in
+      inputs.forEach((input, idx) => {
+        setTimeout(() => {
+          input.style.opacity = '1';
+        }, idx * 30);
+      });
+    }, 200);
+
+    // Clear search form fields too
+    document.getElementById('search_value').value = '';
+    document.getElementById('search_type').value = 'receive_no';
+    document.getElementById('search-results').classList.add('hidden');
+    document.getElementById('no-results').classList.add('hidden');
+    searchResults = [];
+    document.getElementById('bulk-status-update').classList.add('hidden');
+
+    showToast('success', 'ล้างข้อมูลเรียบร้อย', 'ฟอร์มพร้อมสำหรับการบันทึกใหม่', 2000);
+  }
+
+  // Format currency input
+  function formatCurrencyInput(input) {
+    let value = input.value.replace(/[^0-9.]/g, '');
+    if (value) {
+      const parts = value.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      input.value = parts.join('.');
+    }
+  }
+
+  // Search records
+  async function searchRecords() {
+    const searchType = document.getElementById('search_type').value;
+    const searchValue = document.getElementById('search_value').value.trim();
+
+    if (!searchValue) {
+      showToast('warning', 'กรุณาระบุคำค้นหา', '', 3000);
+      return;
+    }
+
+    const loadingId = showLoadingDialog('กำลังค้นหาข้อมูล...', 'กรุณารอสักครู่');
+
+    try {
+      const url = SCRIPT_URL + '?action=search&searchType=' + encodeURIComponent(searchType) + '&searchValue=' + encodeURIComponent(searchValue);
+      const result = await jsonp(url);
+      closeLoadingDialog(loadingId);
+
+      if (result.status === 'success' && result.data.length > 0) {
+        searchResults = result.data;
+        renderSearchResults(result.data);
+        document.getElementById('search-results').classList.remove('hidden');
+        document.getElementById('no-results').classList.add('hidden');
+        document.getElementById('result-count').textContent = result.data.length;
+        showToast('success', 'ค้นหาสำเร็จ!', 'พบข้อมูล ' + result.data.length + ' รายการ');
+        
+        // แสดงปุ่มแก้ไขหลายรายการเฉพาะกรณีค้นหาจากเลขรับที่
+        const bulkButtons = document.getElementById('show-bulk-btn').parentElement.parentElement;
+        if (searchType === 'receive_no') {
+          bulkButtons.style.display = 'flex';
+        } else {
+          bulkButtons.style.display = 'none';
+          document.getElementById('bulk-status-update').classList.add('hidden');
+        }
+      } else {
+        searchResults = [];
+        document.getElementById('search-results').classList.add('hidden');
+        document.getElementById('no-results').classList.remove('hidden');
+        showToast('info', 'ไม่พบข้อมูล', 'ค้นหาด้วยคำค้นหา: ' + searchValue, 3000);
+      }
+    } catch(err) {
+      closeLoadingDialog(loadingId);
+      showToast('error', 'เกิดข้อผิดพลาด', err.message, 4000);
+    }
+  }
+
+  // Status color
+  function statusColor(st) {
+    if (!st) return 'bg-gray-100 text-gray-600';
+    if (st.includes('ตรวจสอบ')) return 'bg-blue-100 text-blue-700';
+    if (st.includes('ผู้แจ้ง')) return 'bg-yellow-100 text-yellow-700';
+    if (st.includes('จังหวัด')) return 'bg-purple-100 text-purple-700';
+    if (st.includes('พิจารณา/อนุมัติ') || st.includes('เสนอหนังสือ')) return 'bg-orange-100 text-orange-700';
+    if (st.includes('จ่ายเงิน')) return 'bg-cyan-100 text-cyan-700';
+    if (st.includes('เสร็จสิ้น')) return 'bg-green-100 text-green-700';
+    return 'bg-gray-100 text-gray-600';
+  }
+
+  // Render search results
+  function renderSearchResults(data) {
+    const tbody = document.getElementById('results-body');
+    tbody.innerHTML = '';
+
+    const statusOptions = [
+      'อยู่ระหว่างตรวจสอบข้อมูล',
+      'อยู่ระหว่างประสานงานผู้แจ้ง',
+      'อยู่ระหว่างประสานงานจังหวัด',
+      'อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ',
+      'อยู่ระหว่างพิจารณาจ่ายเงิน',
+      'ดำเนินการเสร็จสิ้น'
+    ];
+
+    data.forEach((item, idx) => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-gray-100';
+      tr.dataset.row = item.row;
+
+      let statusSelect = '<select data-idx="' + idx + '" class="status-select form-input border border-gray-300 rounded px-2 py-1 text-xs w-full bg-white focus:outline-none" style="min-width:180px">';
+      statusOptions.forEach(opt => {
+        statusSelect += '<option value="' + opt + '"' + (item.status === opt ? ' selected' : '') + '>' + opt + '</option>';
+      });
+      statusSelect += '</select>';
+
+      const amountDisplay = item.amount ? parseFloat(item.amount).toLocaleString('th-TH', {minimumFractionDigits: 2}) : '-';
+
+      tr.innerHTML =
+        '<td class="px-3 py-2.5 text-center font-medium">' + (item.order_no || '') + '</td>' +
+        '<td class="px-3 py-2.5 font-semibold text-navy-800">' + (item.receive_no || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.province_no || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + formatThaiDate(item.province_date) + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.doc_no || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + formatThaiDate(item.doc_date) + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.employer_name || '-') + '</td>' +
+        '<td class="px-3 py-2.5 font-mono text-xs">' + (item.worker_id || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.worker_name || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.nationality || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.receipt_no || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + formatThaiDate(item.receipt_date) + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.officer_name || '-') + '</td>' +
+        '<td class="px-3 py-2.5 text-right font-semibold">' + amountDisplay + '</td>' +
+        '<td class="px-3 py-2.5">' + formatThaiDate(item.approve_date) + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.staff_name || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + statusSelect + '</td>' +
+        '<td class="px-3 py-2.5 text-xs text-gray-500">' + (item.status_datetime || '-') + '</td>' +
+        '<td class="px-3 py-2.5">' + (item.remark || '-') + '</td>' +
+        '<td class="px-3 py-2.5 text-center"><button onclick="openEditModal(' + idx + ')" class="text-blue-600 hover:text-blue-800 transition" title="แก้ไข"><i data-lucide="pencil" class="w-4 h-4"></i></button></td>';
+
+      tbody.appendChild(tr);
+    });
+
+    lucide.createIcons();
+  }
+
+  // Save all statuses
+  async function saveAllStatuses() {
+    const searchType = document.getElementById('search_type').value;
+    const selects = document.querySelectorAll('.status-select');
+    const updates = [];
+
+    selects.forEach(sel => {
+      const idx = parseInt(sel.dataset.idx);
+      const item = searchResults[idx];
+      if (item && sel.value !== item.status) {
+        updates.push({ row: item.row, status: sel.value, idx });
+      }
+    });
+
+    if (updates.length === 0) {
+      showToast('info', 'ไม่มีการเปลี่ยนแปลง', 'ไม่พบสถานะที่ถูกแก้ไข', 3000);
+      return;
+    }
+
+    const shouldConfirm = await new Promise(resolve => {
+      const confirmDiv = document.createElement('div');
+      confirmDiv.className = 'fixed inset-0 z-[11000] flex items-center justify-center';
+      confirmDiv.style.background = 'rgba(0, 0, 0, 0.5)';
+      confirmDiv.style.backdropFilter = 'blur(4px)';
+      confirmDiv.innerHTML = `
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4 animate-in fade-in zoom-in-95">
+          <div class="flex items-center gap-3 mb-4">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">?</div>
+            <h3 class="font-bold text-lg text-gray-900">ยืนยันการบันทึก</h3>
+          </div>
+          <p class="text-gray-600 mb-6 text-sm">ต้องการอัปเดตสถานะ <strong>${updates.length}</strong> รายการ?</p>
+          <div class="flex gap-3">
+            <button class="cancel-btn flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-semibold text-sm transition">ยกเลิก</button>
+            <button class="confirm-btn flex-1 btn-primary text-white px-4 py-2 rounded-lg font-semibold text-sm transition">ยืนยัน</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(confirmDiv);
+      
+      confirmDiv.querySelector('.cancel-btn').addEventListener('click', () => {
+        confirmDiv.remove();
+        resolve(false);
+      });
+      
+      confirmDiv.querySelector('.confirm-btn').addEventListener('click', () => {
+        confirmDiv.remove();
+        resolve(true);
+      });
+    });
+
+    if (!shouldConfirm) return;
+
+    const loadingId = showLoadingDialog('กำลังอัปเดตสถานะ...', '0 / ' + updates.length + ' รายการ');
+
+    let success = 0;
+    for (let i = 0; i < updates.length; i++) {
+      try {
+        const dt = getThaiDateTime();
+        const url = SCRIPT_URL + '?action=update&update_type=status&row=' + updates[i].row + '&status=' + encodeURIComponent(updates[i].status) + '&status_datetime=' + encodeURIComponent(dt);
+        await jsonp(url);
+        searchResults[updates[i].idx].status = updates[i].status;
+        searchResults[updates[i].idx].status_datetime = dt;
+        success++;
+      } catch(e) { /* continue */ }
+    }
+
+    closeLoadingDialog(loadingId);
+    showToast('success', 'อัปเดตสำเร็จ!', 'อัปเดตสถานะ ' + success + ' จาก ' + updates.length + ' รายการ');
+
+    renderSearchResults(searchResults);
+    toggleBulkUpdate();
+  }
+
+  // Open edit modal
+  function openEditModal(idx) {
+    const item = searchResults[idx];
+    if (!item) return;
+
+    const container = document.getElementById('editFormContainer');
+    container.innerHTML = `
+      <form id="editForm" onsubmit="return false;" class="space-y-4">
+        <input type="hidden" id="edit_row" value="${item.row}">
+        <input type="hidden" id="edit_idx" value="${idx}">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">เลขรับที่</label>
+            <input type="text" id="edit_receive_no" value="${item.receive_no || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">เลขรับที่จังหวัด</label>
+            <input type="text" id="edit_province_no" value="${item.province_no || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">วันที่รับที่จังหวัด</label>
+            <input type="date" id="edit_province_date" value="${item.province_date || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">หนังสือเลขรับที่</label>
+            <input type="text" id="edit_doc_no" value="${item.doc_no || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">วันที่รับหนังสือ</label>
+            <input type="date" id="edit_doc_date" value="${item.doc_date || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">ชื่อนายจ้าง/สถานประกอบการ</label>
+            <input type="text" id="edit_employer_name" value="${item.employer_name || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">เลขประจำตัวแรงงานต่างด้าว</label>
+            <input type="text" id="edit_worker_id" inputmode="numeric" maxlength="13" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">ชื่อแรงงานต่างด้าว</label>
+            <input type="text" id="edit_worker_name" oninput="this.value=this.value.replace(/[^a-zA-Z\s]/g,'').toUpperCase()" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">สัญชาติ</label>
+            <select id="edit_nationality" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none bg-white">
+              <option value="">-- เลือก --</option>
+              <option value="เมียนมา" ${item.nationality==='เมียนมา'?'selected':''}>เมียนมา</option>
+              <option value="กัมพูชา" ${item.nationality==='กัมพูชา'?'selected':''}>กัมพูชา</option>
+              <option value="ลาว" ${item.nationality==='ลาว'?'selected':''}>ลาว</option>
+              <option value="เวียดนาม" ${item.nationality==='เวียดนาม'?'selected':''}>เวียดนาม</option>
+              <option value="อื่นๆ" ${item.nationality==='อื่นๆ'?'selected':''}>อื่นๆ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">เลขที่ใบเสร็จรับเงิน</label>
+            <input type="text" id="edit_receipt_no" value="${item.receipt_no || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">วันที่ใบเสร็จรับเงิน</label>
+            <input type="date" id="edit_receipt_date" value="${item.receipt_date || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">ชื่อเจ้าหน้าที่รับเงิน</label>
+            <input type="text" id="edit_officer_name" value="${item.officer_name || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">จำนวนเงิน (ค่าหลักประกัน)</label>
+            <input type="text" id="edit_amount" value="${item.amount ? parseFloat(item.amount).toLocaleString('th-TH', {minimumFractionDigits: 2}) : ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none" oninput="formatCurrencyInput(this)">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">วันที่ขออนุมัติ</label>
+            <input type="date" id="edit_approve_date" value="${item.approve_date || ''}" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">ชื่อ-นามสกุล (ผู้ดำเนินการ)</label>
+            <select id="edit_staff_name" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none bg-white">
+              <option value="">-- เลือก --</option>
+              <option value="นางสาวเมขลา อุดมสิริสถาพร" ${item.staff_name==='นางสาวเมขลา อุดมสิริสถาพร'?'selected':''}>นางสาวเมขลา อุดมสิริสถาพร</option>
+              <option value="นางสาวพัชราภา สุทธิอาจ" ${item.staff_name==='นางสาวพัชราภา สุทธิอาจ'?'selected':''}>นางสาวพัชราภา สุทธิอาจ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">สถานะการดำเนินการ</label>
+            <select id="edit_status" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none bg-white">
+              <option value="อยู่ระหว่างตรวจสอบข้อมูล" ${item.status==='อยู่ระหว่างตรวจสอบข้อมูล'?'selected':''}>อยู่ระหว่างตรวจสอบข้อมูล</option>
+              <option value="อยู่ระหว่างประสานงานผู้แจ้ง" ${item.status==='อยู่ระหว่างประสานงานผู้แจ้ง'?'selected':''}>อยู่ระหว่างประสานงานผู้แจ้ง</option>
+              <option value="อยู่ระหว่างประสานงานจังหวัด" ${item.status==='อยู่ระหว่างประสานงานจังหวัด'?'selected':''}>อยู่ระหว่างประสานงานจังหวัด</option>
+              <option value="อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ" ${item.status==='อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ'?'selected':''}>อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ</option>
+              <option value="อยู่ระหว่างพิจารณาจ่ายเงิน" ${item.status==='อยู่ระหว่างพิจารณาจ่ายเงิน'?'selected':''}>อยู่ระหว่างพิจารณาจ่ายเงิน</option>
+              <option value="ดำเนินการเสร็จสิ้น" ${item.status==='ดำเนินการเสร็จสิ้น'?'selected':''}>ดำเนินการเสร็จสิ้น</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">วันเวลาที่แจ้งสถานะล่าสุด</label>
+            <input type="text" id="edit_status_datetime" value="${item.status_datetime || '-'}" class="form-input w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500 cursor-not-allowed" readonly>
+          </div>
+          <div class="md:col-span-3">
+            <label class="block text-xs font-semibold text-gray-600 mb-1">หมายเหตุ</label>
+            <textarea id="edit_remark" rows="2" class="form-input w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none resize-none">${item.remark || ''}</textarea>
+          </div>
+        </div>
+        <div class="flex gap-3 justify-end pt-4 border-t border-gray-200">
+          <button type="button" onclick="closeEditModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold text-sm transition">ยกเลิก</button>
+          <button type="button" onclick="saveEdit()" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 shadow">
+            <i data-lucide="save" class="w-4 h-4"></i> บันทึกการแก้ไข
+          </button>
+        </div>
+      </form>
+    `;
+
+    document.getElementById('editModal').style.display = 'flex';
+    lucide.createIcons();
+  }
+
+  // Close edit modal
+  function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  // Save edit
+  async function saveEdit() {
+    const row = document.getElementById('edit_row').value;
+    const idx = parseInt(document.getElementById('edit_idx').value);
+    const workerId = document.getElementById('edit_worker_id').value;
+
+    // Validate worker ID length
+    if (workerId && workerId.length !== 13) {
+      showToast('warning', 'เลขประจำตัวแรงงานไม่ถูกต้อง', 'กรุณาพิมพ์เลขประจำตัวแรงงานต่างด้าวให้ครบ 13 หลัก (พิมพ์ ' + workerId.length + ' หลัก)', 4000);
+        document.getElementById('edit_worker_id').focus();
+        return;
+    }
+
+    const shouldConfirm = await new Promise(resolve => {
+      const confirmDiv = document.createElement('div');
+      confirmDiv.className = 'fixed inset-0 z-[11000] flex items-center justify-center';
+      confirmDiv.style.background = 'rgba(0, 0, 0, 0.5)';
+      confirmDiv.style.backdropFilter = 'blur(4px)';
+      confirmDiv.innerHTML = `
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4 animate-in fade-in zoom-in-95">
+          <div class="flex items-center gap-3 mb-4">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">?</div>
+            <h3 class="font-bold text-lg text-gray-900">ยืนยันการแก้ไข</h3>
+          </div>
+          <p class="text-gray-600 mb-6 text-sm">ต้องการบันทึกการแก้ไขข้อมูลนี้หรือไม่?</p>
+          <div class="flex gap-3">
+            <button class="cancel-btn flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-semibold text-sm transition">ยกเลิก</button>
+            <button class="confirm-btn flex-1 btn-primary text-white px-4 py-2 rounded-lg font-semibold text-sm transition">ยืนยัน</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(confirmDiv);
+      
+      confirmDiv.querySelector('.cancel-btn').addEventListener('click', () => {
+        confirmDiv.remove();
+        resolve(false);
+      });
+      
+      confirmDiv.querySelector('.confirm-btn').addEventListener('click', () => {
+        confirmDiv.remove();
+        resolve(true);
+      });
+    });
+
+    if (!shouldConfirm) return;
+
+    const editFields = {
+      receive_no: document.getElementById('edit_receive_no').value,
+      province_no: document.getElementById('edit_province_no').value,
+      province_date: document.getElementById('edit_province_date').value,
+      doc_no: document.getElementById('edit_doc_no').value,
+      doc_date: document.getElementById('edit_doc_date').value,
+      employer_name: document.getElementById('edit_employer_name').value,
+      worker_id: document.getElementById('edit_worker_id').value,
+      worker_name: document.getElementById('edit_worker_name').value,
+      nationality: document.getElementById('edit_nationality').value,
+      receipt_no: document.getElementById('edit_receipt_no').value,
+      receipt_date: document.getElementById('edit_receipt_date').value,
+      officer_name: document.getElementById('edit_officer_name').value,
+      amount: document.getElementById('edit_amount').value.replace(/,/g, ''),
+      approve_date: document.getElementById('edit_approve_date').value,
+      staff_name: document.getElementById('edit_staff_name').value,
+      status: document.getElementById('edit_status').value,
+      status_datetime: getThaiDateTime(),
+      remark: document.getElementById('edit_remark').value
+    };
+
+    const loadingId = showLoadingDialog('กำลังบันทึกการแก้ไข...', 'กรุณารอสักครู่');
+
+    try {
+      let url = SCRIPT_URL + '?action=update&update_type=full&row=' + row;
+      for (const key in editFields) {
+        url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(editFields[key]);
+      }
+      const result = await jsonp(url);
+      closeLoadingDialog(loadingId);
+
+      if (result.status === 'success') {
+        // Update local data
+        Object.keys(editFields).forEach(k => { searchResults[idx][k] = editFields[k]; });
+
+        closeEditModal();
+        renderSearchResults(searchResults);
+        document.getElementById('search_value').value = '';
+        searchResults = [];
+        document.getElementById('search-results').classList.add('hidden');
+        document.getElementById('no-results').classList.add('hidden');
+
+        showToast('success', 'แก้ไขสำเร็จ!', 'ข้อมูลถูกอัปเดตเรียบร้อยแล้ว');
+      } else {
+        showToast('error', 'เกิดข้อผิดพลาด', result.message, 4000);
+      }
+    } catch(err) {
+      closeLoadingDialog(loadingId);
+      showToast('error', 'เกิดข้อผิดพลาด', err.message, 4000);
+    }
+  }
+
+  // Init icons
+  lucide.createIcons();
+
+  // Toggle bulk update panel
+  function toggleBulkUpdate() {
+    const panel = document.getElementById('bulk-status-update');
+    const btn = document.getElementById('show-bulk-btn');
+    if (panel.classList.contains('hidden')) {
+      panel.classList.remove('hidden');
+      btn.classList.add('hidden');
+    } else {
+      panel.classList.add('hidden');
+      document.getElementById('bulk_status_select').value = '';
+      btn.classList.remove('hidden');
+    }
+  }
+
+  // Apply bulk status update
+  async function applyBulkStatusUpdate() {
+    const statusValue = document.getElementById('bulk_status_select').value;
+
+    if (!statusValue) {
+      showToast('warning', 'กรุณาเลือกสถานะ', '', 3000);
+      return;
+    }
+
+    const searchType = document.getElementById('search_type').value;
+    const receiveNo = searchResults.length > 0 ? searchResults[0].receive_no : '';
+
+    const shouldConfirm = await new Promise(resolve => {
+      const confirmDiv = document.createElement('div');
+      confirmDiv.className = 'fixed inset-0 z-[11000] flex items-center justify-center';
+      confirmDiv.style.background = 'rgba(0, 0, 0, 0.5)';
+      confirmDiv.style.backdropFilter = 'blur(4px)';
+      confirmDiv.innerHTML = `
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4 animate-in fade-in zoom-in-95">
+          <div class="flex items-center gap-3 mb-4">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">?</div>
+            <h3 class="font-bold text-lg text-gray-900">ยืนยันการบันทึก</h3>
+          </div>
+          <p class="text-gray-600 mb-6 text-sm">
+            อัปเดตสถานะเป็น <strong>${statusValue}</strong><br>
+            สำหรับเลขรับที่ <strong>${receiveNo}</strong><br>
+            ทั้งหมด <strong>${searchResults.length}</strong> รายการ?
+          </p>
+          <div class="flex gap-3">
+            <button class="cancel-btn flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-semibold text-sm transition">ยกเลิก</button>
+            <button class="confirm-btn flex-1 btn-primary text-white px-4 py-2 rounded-lg font-semibold text-sm transition">ยืนยัน</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(confirmDiv);
+      
+      confirmDiv.querySelector('.cancel-btn').addEventListener('click', () => {
+        confirmDiv.remove();
+        resolve(false);
+      });
+      
+      confirmDiv.querySelector('.confirm-btn').addEventListener('click', () => {
+        confirmDiv.remove();
+        resolve(true);
+      });
+    });
+
+    if (!shouldConfirm) return;
+
+    const loadingId = showLoadingDialog('กำลังอัปเดตสถานะ...', '0 / ' + searchResults.length + ' รายการ');
+
+    let success = 0;
+    const dt = getThaiDateTime();
+
+    for (let i = 0; i < searchResults.length; i++) {
+      try {
+        const url = SCRIPT_URL + '?action=update&update_type=status&row=' + searchResults[i].row + '&status=' + encodeURIComponent(statusValue) + '&status_datetime=' + encodeURIComponent(dt);
+        await jsonp(url);
+        searchResults[i].status = statusValue;
+        searchResults[i].status_datetime = dt;
+        success++;
+      } catch(e) { /* continue */ }
+    }
+
+    closeLoadingDialog(loadingId);
+    showToast('success', 'อัปเดตสำเร็จ!', 'อัปเดตสถานะ ' + success + ' จาก ' + searchResults.length + ' รายการ');
+
+    renderSearchResults(searchResults);
+    toggleBulkUpdate();
+    document.getElementById('search_value').value = '';
+    searchResults = [];
+    document.getElementById('search-results').classList.add('hidden');
+    document.getElementById('no-results').classList.add('hidden');
+  }
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e05ad59c68b45b7',t:'MTc3NDE4NzU1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
