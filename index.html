@@ -24,92 +24,104 @@
   <style>
     * { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; }
     .glass-card {
-      background: #ffffff;
-      backdrop-filter: blur(16px);
-      border: 2px solid #e0f2fe;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(2,132,199,0.15), 0 2px 8px rgba(0,0,0,0.06);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(2,132,199,0.12), 0 0 1px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,0.8);
     }
     .form-card {
       background: #ffffff;
-      border-radius: 14px;
-      padding: 22px;
+      border-radius: 16px;
+      padding: 24px;
       margin-bottom: 16px;
-      border: 3px solid #0284c7;
-      box-shadow: 0 4px 12px rgba(2,132,199,0.12);
+      border: 1px solid #e0f2fe;
+      box-shadow: 0 8px 24px rgba(2,132,199,0.08);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .form-card:hover {
+      box-shadow: 0 12px 32px rgba(2,132,199,0.12);
+      border-color: #bae6fd;
     }
     .input-field {
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 10px 14px;
+      border-radius: 12px;
+      padding: 12px 16px;
       font-size: 14px;
       width: 100%;
-      background: #fff;
+      background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
     }
     .input-field:focus {
       outline: none;
       border-color: #0284c7;
-      box-shadow: 0 0 0 3px rgba(2,132,199,0.12);
+      box-shadow: 0 0 0 4px rgba(2,132,199,0.15), inset 0 1px 2px rgba(2,132,199,0.05);
       background: #f0f9ff;
     }
+    .input-field:hover {
+      border-color: #bae6fd;
+      box-shadow: 0 0 0 2px rgba(2,132,199,0.08);
+    }
     .btn-primary {
-      background: linear-gradient(135deg, #0284c7, #0369a1);
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 10px 28px;
+      border-radius: 12px;
+      padding: 12px 32px;
       font-weight: 600;
       font-size: 15px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(2,132,199,0.2);
+      box-shadow: 0 6px 20px rgba(2,132,199,0.25), 0 0 1px rgba(0,0,0,0.1);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(2,132,199,0.3); }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(2,132,199,0.35); }
+    .btn-primary:active { transform: scale(0.96); }
     .btn-secondary {
-      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       color: #0369a1;
       border: 1.5px solid #bae6fd;
-      border-radius: 10px;
-      padding: 10px 28px;
+      border-radius: 12px;
+      padding: 12px 32px;
       font-weight: 600;
       font-size: 15px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 4px 12px rgba(2,132,199,0.12);
     }
-    .btn-secondary:hover { background: linear-gradient(135deg, #e0f2fe, #bae6fd); }
+    .btn-secondary:hover { background: linear-gradient(135deg, #e0f2fe, #bae6fd); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(2,132,199,0.18); }
     .btn-warn {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 6px 16px;
+      border-radius: 10px;
+      padding: 8px 18px;
       font-weight: 600;
       font-size: 13px;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(245,158,11,0.15);
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.2);
     }
-    .btn-warn:hover { transform: translateY(-1px); box-shadow: 0 3px 12px rgba(245,158,11,0.3); }
+    .btn-warn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(245,158,11,0.3); }
     .btn-success {
-      background: linear-gradient(135deg, #10b981, #059669);
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 6px 16px;
+      border-radius: 10px;
+      padding: 8px 18px;
       font-weight: 600;
       font-size: 13px;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(16,185,129,0.15);
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(16,185,129,0.2);
     }
-    .btn-success:hover { transform: translateY(-1px); box-shadow: 0 3px 12px rgba(16,185,129,0.3); }
+    .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,0.3); }
     .tab-btn {
       padding: 12px 24px;
       font-weight: 600;
@@ -283,7 +295,11 @@
       <div class="form-section-title"><i data-lucide="users" style="width:18px;height:18px;" class="section-icon"></i>ข้อมูลนายจ้างและแรงงานต่างด้าว
       </div>
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:24px;">
-       <div style="grid-column: span 2;"><label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:4px;">ชื่อนายจ้าง/สถานประกอบการ</label><input type="text" class="input-field" id="f_employer_name" placeholder="ชื่อนายจ้าง/สถานประกอบการ">
+       <div style="grid-column: span 2;"><label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:4px;">ชื่อนายจ้าง/สถานประกอบการ</label>
+        <div style="position:relative;"><input type="text" class="input-field" id="f_employer_name" placeholder="ชื่อนายจ้าง/สถานประกอบการ" oninput="filterEmployerSuggestions(this.value)" onblur="hideSuggestions()" style="width:100%;">
+         <div id="employerSuggestions" style="position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #e2e8f0; border-top:none; border-radius:0 0 8px 8px; max-height:200px; overflow-y:auto; display:none; z-index:10; box-shadow:0 4px 12px rgba(0,0,0,0.08);"><!-- Suggestions will be populated here -->
+         </div>
+        </div>
        </div>
       </div>
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:24px;">
@@ -302,7 +318,11 @@
        </div>
        <div><label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:4px;">วันที่ใบเสร็จรับเงิน</label><input type="date" class="input-field" id="f_payment_receipt_date">
        </div>
-       <div><label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:4px;">ชื่อเจ้าหน้าที่รับเงิน</label><input type="text" class="input-field" id="f_cashier_name" placeholder="ชื่อเจ้าหน้าที่รับเงิน">
+       <div><label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:4px;">ชื่อเจ้าหน้าที่รับเงิน</label>
+        <div style="position:relative;"><input type="text" class="input-field" id="f_cashier_name" placeholder="ชื่อเจ้าหน้าที่รับเงิน" oninput="filterCashierSuggestions(this.value)" onblur="hideCashierSuggestions()" style="width:100%;">
+         <div id="cashierSuggestions" style="position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #e2e8f0; border-top:none; border-radius:0 0 8px 8px; max-height:200px; overflow-y:auto; display:none; z-index:10; box-shadow:0 4px 12px rgba(0,0,0,0.08);"><!-- Suggestions will be populated here -->
+         </div>
+        </div>
        </div>
        <div><label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:4px;">จำนวนเงิน (ค่าหลักประกัน)</label><input type="text" class="input-field" id="f_guarantee_amount" placeholder="0.00" inputmode="decimal" oninput="formatCurrency(this)">
        </div>
@@ -319,6 +339,22 @@
         <label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:4px;">สถานะการดำเนินการ</label> <select class="input-field" id="f_status"> <option value="">-- เลือกสถานะ --</option> <option value="อยู่ระหว่างตรวจสอบข้อมูล">อยู่ระหว่างตรวจสอบข้อมูล</option> <option value="อยู่ระหว่างประสานงานผู้แจ้ง">อยู่ระหว่างประสานงานผู้แจ้ง</option> <option value="อยู่ระหว่างประสานงานจังหวัด">อยู่ระหว่างประสานงานจังหวัด</option> <option value="อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ">อยู่ระหว่างเสนอหนังสือพิจารณา/อนุมัติ</option> <option value="อยู่ระหว่างพิจารณาจ่ายเงิน">อยู่ระหว่างพิจารณาจ่ายเงิน</option> <option value="ดำเนินการเสร็จสิ้น">ดำเนินการเสร็จสิ้น</option> </select>
        </div>
        <div><label style="font-size:13px;font-weight:600;color:#334155;display:block;margin-bottom:4px;">วันเวลาที่แจ้งสถานะล่าสุด</label><input type="text" class="input-field readonly-field" id="f_last_status_update" readonly>
+        <script>
+          function updateCurrentDateTime() {
+            const thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+            const now = new Date();
+            const d = now.getDate();
+            const m = thaiMonths[now.getMonth()];
+            const y = now.getFullYear() + 543;
+            const hr = String(now.getHours()).padStart(2,'0');
+            const min = String(now.getMinutes()).padStart(2,'0');
+            const sec = String(now.getSeconds()).padStart(2,'0');
+            const dateTimeStr = `${d} ${m} ${y} เวลา ${hr}:${min}:${sec} น.`;
+            document.getElementById('f_last_status_update').value = dateTimeStr;
+          }
+          updateCurrentDateTime();
+          setInterval(updateCurrentDateTime, 1000);
+        </script>
        </div>
       </div><!-- Section 5: หมายเหตุ -->
       <div class="form-section-title"><i data-lucide="message-square" style="width:18px;height:18px;" class="section-icon"></i>หมายเหตุ
@@ -391,6 +427,142 @@
   const API_URL = 'https://script.google.com/macros/s/AKfycbwg3Dq_3LAaLC0WDRO2T7R1HWJlSDSfdBQHqXSrps-oucNNAd8qJU_VgoKt6ebptJiJ/exec';
   let searchResultsData = [];
   let jsonpCounter = 0;
+  let employerList = [];
+  let cashierList = [];
+  const STORAGE_KEY = 'employer_history';
+  const CASHIER_STORAGE_KEY = 'cashier_history';
+
+  // Load employer history from localStorage
+  function loadEmployerHistory() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    employerList = stored ? JSON.parse(stored) : [];
+  }
+
+  // Save employer to history
+  function saveEmployerToHistory(name) {
+    if (!name || !name.trim()) return;
+    name = name.trim();
+    
+    // Remove if already exists to avoid duplicates
+    employerList = employerList.filter(e => e !== name);
+    
+    // Add to beginning
+    employerList.unshift(name);
+    
+    // Keep only last 50
+    if (employerList.length > 50) {
+      employerList = employerList.slice(0, 50);
+    }
+    
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(employerList));
+  }
+
+  // Filter and show employer suggestions
+  function filterEmployerSuggestions(value) {
+    const input = value.trim().toLowerCase();
+    const sugDiv = document.getElementById('employerSuggestions');
+    
+    if (!input) {
+      sugDiv.style.display = 'none';
+      return;
+    }
+    
+    const filtered = employerList.filter(e => e.toLowerCase().includes(input));
+    
+    if (filtered.length === 0) {
+      sugDiv.style.display = 'none';
+      return;
+    }
+    
+    sugDiv.innerHTML = filtered.map((name, idx) => `
+      <div style="padding:10px 14px; border-bottom:1px solid #f1f5f9; cursor:pointer; transition:all 0.15s; background:${idx % 2 === 0 ? '#fff' : '#f8fafc'};" 
+           onmouseover="this.style.background='#e0f2fe'" 
+           onmouseout="this.style.background='${idx % 2 === 0 ? '#fff' : '#f8fafc'}'"
+           onclick="selectFromSuggestion('${name.replace(/'/g, "\\'")}')" 
+           title="${name}">
+        <div style="font-size:13px; color:#0f172a; font-weight:500;">${escHtml(name)}</div>
+      </div>
+    `).join('');
+    
+    sugDiv.style.display = 'block';
+  }
+
+  function selectFromSuggestion(name) {
+    document.getElementById('f_employer_name').value = name;
+    document.getElementById('employerSuggestions').style.display = 'none';
+  }
+
+  function hideSuggestions() {
+    setTimeout(() => {
+      document.getElementById('employerSuggestions').style.display = 'none';
+    }, 100);
+  }
+
+  // Load cashier history from localStorage
+  function loadCashierHistory() {
+    const stored = localStorage.getItem(CASHIER_STORAGE_KEY);
+    cashierList = stored ? JSON.parse(stored) : [];
+  }
+
+  // Save cashier to history
+  function saveCashierToHistory(name) {
+    if (!name || !name.trim()) return;
+    name = name.trim();
+    
+    // Remove if already exists to avoid duplicates
+    cashierList = cashierList.filter(c => c !== name);
+    
+    // Add to beginning
+    cashierList.unshift(name);
+    
+    // Keep only last 50
+    if (cashierList.length > 50) {
+      cashierList = cashierList.slice(0, 50);
+    }
+    
+    localStorage.setItem(CASHIER_STORAGE_KEY, JSON.stringify(cashierList));
+  }
+
+  // Filter and show cashier suggestions
+  function filterCashierSuggestions(value) {
+    const input = value.trim().toLowerCase();
+    const sugDiv = document.getElementById('cashierSuggestions');
+    
+    if (!input) {
+      sugDiv.style.display = 'none';
+      return;
+    }
+    
+    const filtered = cashierList.filter(c => c.toLowerCase().includes(input));
+    
+    if (filtered.length === 0) {
+      sugDiv.style.display = 'none';
+      return;
+    }
+    
+    sugDiv.innerHTML = filtered.map((name, idx) => `
+      <div style="padding:10px 14px; border-bottom:1px solid #f1f5f9; cursor:pointer; transition:all 0.15s; background:${idx % 2 === 0 ? '#fff' : '#f8fafc'};" 
+           onmouseover="this.style.background='#e0f2fe'" 
+           onmouseout="this.style.background='${idx % 2 === 0 ? '#fff' : '#f8fafc'}'"
+           onclick="selectFromCashierSuggestion('${name.replace(/'/g, "\\'")}')" 
+           title="${name}">
+        <div style="font-size:13px; color:#0f172a; font-weight:500;">${escHtml(name)}</div>
+      </div>
+    `).join('');
+    
+    sugDiv.style.display = 'block';
+  }
+
+  function selectFromCashierSuggestion(name) {
+    document.getElementById('f_cashier_name').value = name;
+    document.getElementById('cashierSuggestions').style.display = 'none';
+  }
+
+  function hideCashierSuggestions() {
+    setTimeout(() => {
+      document.getElementById('cashierSuggestions').style.display = 'none';
+    }, 100);
+  }
 
   // Validate Worker ID format (RA + 17 digits)
   function validateWorkerId(input) {
@@ -572,7 +744,7 @@
 
   // Save record
   async function saveRecord() {
-    const fields = ['receipt_no','province_receipt_no','province_receipt_date','doc_receipt_no','doc_receipt_date','employer_name','worker_id','worker_name','nationality','payment_receipt_no','payment_receipt_date','cashier_name','guarantee_amount','approval_date','officer_name','status','notes','last_status_update'];
+    const fields = ['receipt_no','province_receipt_no','province_receipt_date','doc_receipt_no','doc_receipt_date','employer_name','worker_id','worker_name','nationality','payment_receipt_no','payment_receipt_date','cashier_name','guarantee_amount','approval_date','officer_name','status','notes'];
     const params = { action: 'insert' };
     let hasData = false;
     fields.forEach(f => {
@@ -580,10 +752,24 @@
       params[f] = el ? el.value : '';
       if (params[f]) hasData = true;
     });
+    // Always capture the current date-time when saving
+    params.last_status_update = getThaiDateTime();
 
     if (!hasData) {
       Swal.fire({ icon:'warning', title:'กรุณากรอกข้อมูล', text:'กรุณากรอกข้อมูลอย่างน้อย 1 ช่อง', confirmButtonColor:'#0284c7' });
       return;
+    }
+
+    // Save employer to history before saving record
+    const employerName = params.employer_name;
+    if (employerName) {
+      saveEmployerToHistory(employerName);
+    }
+
+    // Save cashier to history before saving record
+    const cashierName = params.cashier_name;
+    if (cashierName) {
+      saveCashierToHistory(cashierName);
     }
 
     Swal.fire({ title:'กำลังบันทึกข้อมูล...', html:'<p style="color:#64748b;">กรุณารอสักครู่</p>', allowOutsideClick:false, didOpen:()=>{ Swal.showLoading(); }});
@@ -639,7 +825,7 @@
           confirmButtonText:'<i data-lucide="check" style="width:16px;height:16px;display:inline-block;margin-right:6px;vertical-align:-3px;"></i>ยืนยัน',
           background:'#f8fafc',
           backdrop:'rgba(15, 23, 42, 0.2)',
-          timer:6000, 
+          timer:1500, 
           timerProgressBar:true,
           didOpen: () => { lucide.createIcons(); }
         });
@@ -1110,6 +1296,12 @@
 
   // Init icons
   lucide.createIcons();
+
+  // Load employer history when page loads
+  window.addEventListener('load', () => {
+    loadEmployerHistory();
+    loadCashierHistory();
+  });
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e0bded1e4a28949',t:'MTc3NDI1MjQ5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e0ebb2d52b733b6',t:'MTc3NDI4MjQ4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
